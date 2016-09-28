@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<project name="dev-deployment" xmlns="http://nant.sf.net/release/0.92/nant.xsd" default="deploy-release">
+  <!-- Environment -->
+  <!-- property name="framework" value="C:\Windows\Microsoft.NET\Framework\v4.0.30319"/ -->
+  <property name="framework" value="C:\Program Files\MSBuild\14.0\Bin"/>
+  
+
+  <property name="build.solution" value="..\ECMAuthDnn.MVC.sln"/>
+  <property name="build.configuration" value="RELEASE" />
+  <property name="build.dir" value="${directory::get-current-directory()}"/>
+  <property name="build.output" value="bin"/>
+
+  <property name="deploy.api.dir" value="D:\inetpub\${build.configuration}_wwc_api"/>
+  <property name="deploy.web.dir" value="D:\inetpub\${build.configuration}_wwc_web"/>
+  <property name="deploy.version" value="3.4.0.1rc24"/>
+  <tstamp property="deploy.date" pattern="yyyyMMdd_HHmm"/>
+
+  <!-- Copy to dist folder -->
+  <target name="cp-dnn" depends="build" description="Copy built files to dist folder">
+    <!-- prepare folder -->
+    <delete>
+      <fileset>
+        <include name="D:\htdocs\dnndev\bin\ECMAuthDnn.dll" />
+      </fileset>
+    </delete>
+
+    <!--
+    <delete>
+      <fileset>
+        <include name="D:\htdocs\dnndev\DesktopModules\MVC\ECMAuthDnn\**\*.*" />
+      </fileset>
+    </delete>
+    -->
+    
+    <!-- Assembly -->
+    <copy todir="D:\htdocs\dnndev\bin">
+      <fileset basedir=".\bin">
+        <include name="ECMAuthDnn.dll"/>
+      </fileset>
+    </copy>
+
+    <!-- App_LocalResources -->
+    <copy todir="D:\htdocs\dnndev\DesktopModules\MVC\ECMAuthDnn\App_LocalResources">
+      <fileset basedir=".\App_LocalResources">
+        <include name="**\*"/>
+      </fileset>
+    </copy>
+    
+    <!-- Providers -->
+    <copy todir="D:\htdocs\dnndev\DesktopModules\MVC\ECMAuthDnn\Providers">
+      <fileset basedir=".\Providers">
+        <include name="**\*"/>
+      </fileset>
+    </copy>
+    
+    <!-- Views -->
+    <copy todir="D:\htdocs\dnndev\DesktopModules\MVC\ECMAuthDnn\Views">
+      <fileset basedir=".\Views">
+        <include name="**\*"/>
+      </fileset>
+    </copy>
+
+    <!-- Module style -->
+    <copy todir="D:\htdocs\dnndev\DesktopModules\MVC\ECMAuthDnn">
+      <fileset basedir=".\">
+        <include name="module.css"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <!-- Coding Tasks -->
+  <!-- Clean solution -->
+  <target name="clean" description="Clean">
+    <echo message="#### TARGET - Clean ${build.configuration} ####"/>
+    <echo message=""/>
+    <echo message="Build Directory is ${build.dir}" />
+    <exec program="${framework}\msbuild.exe"
+				  commandline=".\${build.solution}
+                        /nologo
+                        /t:Clean
+                        /p:Configuration=${build.configuration}
+                        /v:m"
+          workingdir="${build.dir}"
+          failonerror="true" />
+  </target>
+  <!-- Build solution -->
+  <target name="build" depends="clean" description="Build">
+    <echo message="#### TARGET - Build ${build.configuration} ####"/>
+    <echo message=""/>
+    <echo message="Build Directory is ${build.dir}" />
+    <exec program="${framework}\msbuild.exe"
+				  commandline=".\${build.solution}
+                        /nologo
+                        /t:Build
+                        /p:Configuration=${build.configuration}
+                        /v:m
+                        /fl
+                        /flp:logfile=build_${deploy.version}.log;verbosity=diagnostic"
+          workingdir="${build.dir}"
+          failonerror="true" />
+  </target>
+
+</project>

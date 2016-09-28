@@ -1,0 +1,32 @@
+﻿@inherits DotNetNuke.Web.Mvc.Framework.DnnWebViewPage<Dnn.Modules.ECMAuthDnn.Models.Settings>
+
+
+@using DotNetNuke.Web.Mvc.Helpers
+
+<h2 id="dnnSitePanel-BasicSettings" class="dnnFormSectionHead"><a href="" class="dnnSectionExpanded">@Dnn.LocalizeString("BasicSettings")</a></h2>
+<fieldset>
+    <div class="dnnFormItem">
+        <div class="dnnLabel" style="position: relative;">
+            @Html.LabelFor(m => m.AuthUrl, new { @class = "col-md-2 control-label" })
+        </div>
+        @Html.TextBoxFor(m => m.AuthUrl)
+    </div>
+    <div class="dnnFormItem">
+        <div class="dnnLabel" style="position: relative;">
+            @Html.LabelFor(m => m.RedirectUrl, new { @class = "col-md-2 control-label" })
+        </div>
+        @Html.TextBoxFor(m => m.RedirectUrl)
+    </div>
+    <div class="dnnFormItem">
+        <div class="dnnLabel" style="position: relative;">
+            @Html.LabelFor(m => m.DnnUser, new { @class = "col-md-2 control-label" })
+        </div>
+        @Html.TextBoxFor(m => m.DnnUser)
+    </div>
+    <div class="dnnFormItem">
+        <div class="dnnLabel" style="position: relative;">
+            @Html.LabelFor(m => m.DnnPass, new { @class = "col-md-2 control-label" })
+        </div>
+        @Html.TextBoxFor(m => m.DnnPass)
+    </div>
+</fieldset>

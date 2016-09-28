@@ -1,0 +1,24 @@
+﻿@inherits DotNetNuke.Web.Mvc.Framework.DnnWebViewPage<Dnn.Modules.ECMAuthDnn.Models.LogOn>
+
+@using DotNetNuke.Web.Mvc.Helpers
+
+<div id="Item-@Dnn.ModuleContext.ModuleId">
+    <div class="dnnForm dnnEditBasicSettings">
+        <fieldset>
+            <div class="dnnFormItem">
+                <div><label for="itemName">@Dnn.LocalizeString("plUserName")</label></div>
+                @Html.TextBoxFor(m => m.UserName)
+            </div>
+            <div class="dnnFormItem">
+                <div><label for="itemDescription">@Dnn.LocalizeString("plPassWord")</label></div>
+                @Html.TextBoxFor(m => m.PassWord)
+            </div>
+            <div class="dnnFormItem">
+                <div><label for="itemUser">@Dnn.LocalizeString("plRememberMe")</label></div>
+                @Html.CheckBoxFor(m => m.RememberMe)
+            </div>
+        </fieldset>
+    </div>
+    <button type="submit" class="dnnPrimaryAction">@Dnn.LocalizeString("Login")</button>
+    <a id="cancelEdit" href="#" class="dnnSecondaryAction">@Dnn.LocalizeString("Cancel")</a>
+</div>
