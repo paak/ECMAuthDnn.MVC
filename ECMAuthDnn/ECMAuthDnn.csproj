@@ -135,6 +135,7 @@
   <ItemGroup>
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="ECMAuthDnn.build" />
+    <Content Include="Views\Account\Logout.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

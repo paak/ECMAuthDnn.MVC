@@ -10,11 +10,13 @@
 ' 
 */
 
-using DotNetNuke.Web.Mvc.Framework.Controllers;
 using DotNetNuke.Collections;
-using System.Web.Mvc;
+using DotNetNuke.Common.Utilities;
 using DotNetNuke.Security;
 using DotNetNuke.Web.Mvc.Framework.ActionFilters;
+using DotNetNuke.Web.Mvc.Framework.Controllers;
+using System.Web.Mvc;
+using System.Xml;
 
 namespace Dnn.Modules.ECMAuthDnn.Controllers
 {
@@ -33,7 +35,12 @@ namespace Dnn.Modules.ECMAuthDnn.Controllers
             settings.AuthUrl = ModuleContext.Configuration.ModuleSettings.GetValueOrDefault("ECMAuthDnn_AuthUrl", string.Empty);
             settings.RedirectUrl = ModuleContext.Configuration.ModuleSettings.GetValueOrDefault("ECMAuthDnn_RedirectUrl", string.Empty);
             settings.DnnUser = ModuleContext.Configuration.ModuleSettings.GetValueOrDefault("ECMAuthDnn_DnnUser", string.Empty);
-            settings.DnnPass = ModuleContext.Configuration.ModuleSettings.GetValueOrDefault("ECMAuthDnn_DnnPass", string.Empty);
+
+            string pass = ModuleContext.Configuration.ModuleSettings.GetValueOrDefault("ECMAuthDnn_DnnPass", string.Empty);
+            if (!string.IsNullOrWhiteSpace(pass))
+            {
+                settings.DnnPass = new PortalSecurity().Decrypt(EncryptionKey, pass);
+            }
 
             return View(settings);
         }
@@ -51,9 +58,30 @@ namespace Dnn.Modules.ECMAuthDnn.Controllers
             ModuleContext.Configuration.ModuleSettings["ECMAuthDnn_AuthUrl"] = settings.AuthUrl;
             ModuleContext.Configuration.ModuleSettings["ECMAuthDnn_RedirectUrl"] = settings.RedirectUrl;
             ModuleContext.Configuration.ModuleSettings["ECMAuthDnn_DnnUser"] = settings.DnnUser;
-            ModuleContext.Configuration.ModuleSettings["ECMAuthDnn_DnnPass"] = settings.DnnPass;
+            ModuleContext.Configuration.ModuleSettings["ECMAuthDnn_DnnPass"] = new PortalSecurity().Encrypt(EncryptionKey, settings.DnnPass);
 
             return RedirectToDefaultRoute();
         }
+
+        #region Private Members
+        private string EncryptionKey
+        {
+            get
+            {
+                try
+                {
+                    XmlDocument xmlConfig = Config.Load();
+                    XmlNode xmlMachineKey = xmlConfig.SelectSingleNode("configuration/system.web/machineKey");
+
+                    return xmlMachineKey.Attributes["decryptionKey"].InnerText;
+                }
+                catch
+                {
+                    return string.Empty;
+                }
+            }
+        }
+
+        #endregion
     }
 }

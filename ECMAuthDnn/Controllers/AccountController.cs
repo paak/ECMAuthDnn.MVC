@@ -1,26 +1,36 @@
-﻿using DotNetNuke.Common.Utilities;
+﻿using Dnn.Modules.ECMAuthDnn.Models;
+using DotNetNuke.Collections;
+using DotNetNuke.Common.Utilities;
 using DotNetNuke.Entities.Portals;
 using DotNetNuke.Entities.Users;
 using DotNetNuke.Security;
 using DotNetNuke.Security.Membership;
 using DotNetNuke.Services.Authentication;
+using DotNetNuke.Services.Localization;
 using DotNetNuke.Web.Mvc.Framework.Controllers;
-
-using System.Web.Mvc;
 using System;
-using Dnn.Modules.ECMAuthDnn.Models;
-using DotNetNuke.Collections;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Net;
 using System.Text;
-using System.Xml;
 using System.Web;
+using System.Web.Mvc;
+using System.Web.Security;
+using System.Xml;
 
 namespace Dnn.Modules.ECMAuthDnn.Controllers
 {
     public class AccountController : DnnController
     {
+        // GET: Account
+        [HttpGet]
+        public ActionResult Logout()
+        {
+            FormsAuthentication.SignOut();
+            Response.Redirect(DotNetNuke.Common.Globals.NavigateURL(), true);
+
+            return View();
+        }
+
         // GET: Account
         [HttpGet]
         public ActionResult Login()
@@ -77,9 +87,6 @@ namespace Dnn.Modules.ECMAuthDnn.Controllers
 
                     HttpCookie httpCookie = new HttpCookie("authToken");
                     httpCookie.Value = setCookie;
-                    //httpCookie.Expires = cookie.Expires;
-                    //httpCookie.HttpOnly = cookie.HttpOnly;
-                    //httpCookie.Path = cookie.Path;
 
                     Response.SetCookie(httpCookie);
                 }
@@ -96,8 +103,6 @@ namespace Dnn.Modules.ECMAuthDnn.Controllers
                 HttpWebResponse response = (HttpWebResponse)webEx.Response;
 
                 // Or if you want to return an HTTP 404 instead:
-                //throw new HttpException(401, response.StatusDescription);
-                //return Content(response.StatusDescription);
                 logonModel.IsAuthenthicated = false;
                 logonModel.Message = response.StatusDescription;
             }
@@ -108,14 +113,15 @@ namespace Dnn.Modules.ECMAuthDnn.Controllers
                 logonModel.Message = ex.Message;
             }
 
+            // Authenthicate failed
             if (!logonModel.IsAuthenthicated)
             {
+                ViewBag.Message = Localization.GetString("LoginFailed", LocalResourceFile);
                 return View();
             }
             string AuthType = "DNN";
 
             UserLoginStatus status = new UserLoginStatus();
-            //UserInfo userInfo = UserController.ValidateUser(this.PortalSettings.PortalId, userName, passWord, AuthType, "", PortalSettings.PortalName, AuthenticationLoginBase.GetIPAddress(), ref status);
 
             UserInfo userInfo = UserController.ValidateUser(this.PortalSettings.PortalId,
                 settings.DnnUser,
@@ -129,27 +135,24 @@ namespace Dnn.Modules.ECMAuthDnn.Controllers
             switch (status)
             {
                 case UserLoginStatus.LOGIN_SUCCESS:
-                    userInfo.Membership.Password = settings.DnnPass;
-                    userInfo.Username = settings.DnnUser;
-
-                    UserController.UserLogin(this.PortalSettings.PortalId, userInfo, PortalSettings.PortalName, AuthenticationLoginBase.GetIPAddress(), true);
-
-                    Response.Redirect(DotNetNuke.Common.Globals.NavigateURL(), true);
-                    break;
                 case UserLoginStatus.LOGIN_SUPERUSER:
                     userInfo.Membership.Password = settings.DnnPass;
                     userInfo.Username = settings.DnnUser;
 
                     UserController.UserLogin(this.PortalSettings.PortalId, userInfo, PortalSettings.PortalName, AuthenticationLoginBase.GetIPAddress(), true);
 
-                    Response.Redirect(DotNetNuke.Common.Globals.NavigateURL(), true);
+                    //Response.Redirect(DotNetNuke.Common.Globals.NavigateURL(), true);
+                    Response.Redirect(settings.RedirectUrl, true);
+                    break;
+                case UserLoginStatus.LOGIN_FAILURE:
+                    ViewBag.Message = Localization.GetString("LoginDnnFailed", LocalResourceFile);
                     break;
                 default:
+                    ViewBag.Message = Localization.GetString("LoginDnnError", LocalResourceFile);
                     break;
             }
 
             return View();
-
         }
 
         #region Private Functions
@@ -166,9 +169,14 @@ namespace Dnn.Modules.ECMAuthDnn.Controllers
             // Get Module Settings
             Settings settings = new Settings();
             settings.AuthUrl = ModuleContext.Configuration.ModuleSettings.GetValueOrDefault("ECMAuthDnn_AuthUrl", string.Empty);
-            settings.RedirectUrl = ModuleContext.Configuration.ModuleSettings.GetValueOrDefault("ECMAuthDnn_RedirectUrl", string.Empty);
+            settings.RedirectUrl = ModuleContext.Configuration.ModuleSettings.GetValueOrDefault("ECMAuthDnn_RedirectUrl", "~/");
             settings.DnnUser = ModuleContext.Configuration.ModuleSettings.GetValueOrDefault("ECMAuthDnn_DnnUser", string.Empty);
-            settings.DnnPass = ModuleContext.Configuration.ModuleSettings.GetValueOrDefault("ECMAuthDnn_DnnPass", string.Empty);
+
+            string pass = ModuleContext.Configuration.ModuleSettings.GetValueOrDefault("ECMAuthDnn_DnnPass", string.Empty);
+            if (!string.IsNullOrWhiteSpace(pass))
+            {
+                settings.DnnPass = new PortalSecurity().Decrypt(EncryptionKey, pass);
+            }
 
             return settings;
         }
@@ -199,5 +207,27 @@ namespace Dnn.Modules.ECMAuthDnn.Controllers
             return encoding.GetBytes(xml.OuterXml);
         }
         #endregion
+
+        #region Private Members
+        private string EncryptionKey
+        {
+            get
+            {
+                try
+                {
+                    XmlDocument xmlConfig = Config.Load();
+                    XmlNode xmlMachineKey = xmlConfig.SelectSingleNode("configuration/system.web/machineKey");
+
+                    return xmlMachineKey.Attributes["decryptionKey"].InnerText;
+                }
+                catch
+                {
+                    return string.Empty;
+                }
+            }
+        }
+
+        #endregion
+
     }
 }

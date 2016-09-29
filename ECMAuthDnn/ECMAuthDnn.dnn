@@ -62,10 +62,10 @@
                     <supportsPopUps>True</supportsPopUps>
                   </moduleControl>
                   <moduleControl>
-                    <controlKey>Edit</controlKey>
-                    <controlSrc>Dnn.Modules.ECMAuthDnn.Controllers/Item/Edit.mvc</controlSrc>
+                    <controlKey />
+                    <controlSrc>Dnn.Modules.ECMAuthDnn.Controllers/Account/Logout.mvc</controlSrc>
                     <supportsPartialRendering>False</supportsPartialRendering>
-                    <controlTitle>Edit Content</controlTitle>
+                    <controlTitle>Logout</controlTitle>
                     <controlType>Edit</controlType>
                     <iconFile />
                     <helpUrl />

@@ -120,13 +120,22 @@
   <data name="Login.Text" xml:space="preserve">
     <value>Login</value>
   </data>
-  <data name="plPassWord" xml:space="preserve">
+  <data name="LoginDnnError.Text" xml:space="preserve">
+    <value>An error occured. Please contact support.</value>
+  </data>
+  <data name="LoginDnnFailed.Text" xml:space="preserve">
+    <value>Login to eCommerce website failed. Please contact support.</value>
+  </data>
+  <data name="LoginFailed.Text" xml:space="preserve">
+    <value>Login Failed. Please remember that passwords are case sensitive.</value>
+  </data>
+  <data name="plPassWord.Text" xml:space="preserve">
     <value>Password</value>
   </data>
-  <data name="plRememberMe" xml:space="preserve">
+  <data name="plRememberMe.Text" xml:space="preserve">
     <value>Remember Me</value>
   </data>
-  <data name="plUserName" xml:space="preserve">
+  <data name="plUserName.Text" xml:space="preserve">
     <value>Username</value>
   </data>
 </root>

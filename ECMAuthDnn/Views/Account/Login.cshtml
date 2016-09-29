@@ -1,24 +1,33 @@
 ﻿@inherits DotNetNuke.Web.Mvc.Framework.DnnWebViewPage<Dnn.Modules.ECMAuthDnn.Models.LogOn>
 
-@using DotNetNuke.Web.Mvc.Helpers
+@if (ViewBag.Message != null)
+{
+    <div class="dnnFormMessage dnnFormValidationSummary">@ViewBag.Message</div>
+}
 
 <div id="Item-@Dnn.ModuleContext.ModuleId">
-    <div class="dnnForm dnnEditBasicSettings">
+    <div class="dnnForm">
         <fieldset>
             <div class="dnnFormItem">
-                <div><label for="itemName">@Dnn.LocalizeString("plUserName")</label></div>
+                <div><label for="UserName">@Dnn.LocalizeString("plUserName")</label></div>
                 @Html.TextBoxFor(m => m.UserName)
             </div>
             <div class="dnnFormItem">
-                <div><label for="itemDescription">@Dnn.LocalizeString("plPassWord")</label></div>
-                @Html.TextBoxFor(m => m.PassWord)
+                <div><label for="PassWord">@Dnn.LocalizeString("plPassWord")</label></div>
+                @Html.PasswordFor(m => m.PassWord)
             </div>
             <div class="dnnFormItem">
-                <div><label for="itemUser">@Dnn.LocalizeString("plRememberMe")</label></div>
+                <label for="RememberMe">@Dnn.LocalizeString("plRememberMe")</label>
                 @Html.CheckBoxFor(m => m.RememberMe)
             </div>
         </fieldset>
+
+        <ul class="dnnActions dnnClear">
+            <li><button type="submit" class="dnnPrimaryAction">@Dnn.LocalizeString("Login")</button></li>
+            <li><a id="cancelEdit" href="#" class="dnnSecondaryAction">@Dnn.LocalizeString("Cancel")</a></li>
+        </ul>
     </div>
-    <button type="submit" class="dnnPrimaryAction">@Dnn.LocalizeString("Login")</button>
-    <a id="cancelEdit" href="#" class="dnnSecondaryAction">@Dnn.LocalizeString("Cancel")</a>
+    <!--
+    <a href="@Url.Action("Logout", "Account")">Logout</a>
+    -->
 </div>
