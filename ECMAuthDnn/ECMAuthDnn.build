@@ -20,21 +20,19 @@
     <!-- prepare folder -->
     <delete>
       <fileset>
-        <include name="D:\htdocs\dnndev\bin\ECMAuthDnn.dll" />
+        <include name="D:\htdocs\dnndev\bin\ECMAuthDnn.*" />
       </fileset>
     </delete>
-
-    <!--
+<!--
     <delete>
       <fileset>
         <include name="D:\htdocs\dnndev\DesktopModules\MVC\ECMAuthDnn\**\*.*" />
       </fileset>
     </delete>
     -->
-    
     <!-- Assembly -->
     <copy todir="D:\htdocs\dnndev\bin">
-      <fileset basedir=".\bin">
+      <fileset basedir="..\..\bin">
         <include name="ECMAuthDnn.dll"/>
       </fileset>
     </copy>
