@@ -19,5 +19,6 @@ namespace Dnn.Modules.ECMAuthDnn.Models
         public string RedirectUrl { get; set; }
         public string DnnUser { get; set; }
         public string DnnPass { get; set; }
+        public bool AllowWCA { get; set; }
     }
 }

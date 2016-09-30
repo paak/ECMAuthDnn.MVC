@@ -1,23 +1,20 @@
 ﻿<h3>ECMAuthDnn</h3>
 <p class="Contributor">
-	Dnn Software <br />
-	<a href="mailto:support@dnnsoftware.com">support@dnnsoftware.com</a><br />
-	<a href=http://www.dnnsoftware.com>http://www.dnnsoftware.com</a><br />
+	WCA eCommerce Network<br />
+	<a href="mailto:support@wcaecommerce.com">support@wcaecommerce.com</a><br />
+	<a href=http://www.wcaecommerce.com>http://www.wcaecommerce.com</a><br />
 </p>
 <hr/>
 <div class="License">
 	<h3>About the ECMAuthDnn</h3>
 	<p class="Owner">
-		<b>Version CHANGEME</b><br /><br />
+		<b>Authenthicate with external server.</b><br /><br />
 	</p>
-	<p>Description about version.</p>
+	<p>Allow WCA eCommerce Network members loging to website using their membership credential.</p>
 	
 	<h4>Bug Fixes</h4>
-	<ul>
-			<li>List</li>
-			<li>of</li>
-			<li>bug</li>
-			<li>fixes</li>
-	</ul>
+	<!-- ul>
+		<li>List</li>
+	</ul -->
 	
 </div>

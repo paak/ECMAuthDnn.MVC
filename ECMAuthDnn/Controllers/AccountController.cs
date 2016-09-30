@@ -82,7 +82,17 @@ namespace Dnn.Modules.ECMAuthDnn.Controllers
 
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
+                    // Get response object
+
+                    // If allows wca members
+                    if (!settings.AllowWCA)
+                    {
+
+                    }
+
                     logonModel.IsAuthenthicated = true;
+
+                    // Set cookie for browser
                     string setCookie = response.Headers[HttpResponseHeader.SetCookie];
 
                     HttpCookie httpCookie = new HttpCookie("authToken");
@@ -93,9 +103,8 @@ namespace Dnn.Modules.ECMAuthDnn.Controllers
                 else
                 {
                     logonModel.IsAuthenthicated = false;
+                    ViewBag.Message = Localization.GetString("LoginFailed", LocalResourceFile);
                 }
-                logonModel.Message = response.StatusDescription;
-
             }
 
             catch (WebException webEx)
@@ -104,21 +113,21 @@ namespace Dnn.Modules.ECMAuthDnn.Controllers
 
                 // Or if you want to return an HTTP 404 instead:
                 logonModel.IsAuthenthicated = false;
-                logonModel.Message = response.StatusDescription;
+                ViewBag.Message = Localization.GetString("LoginFailed", LocalResourceFile);
             }
 
-            catch (Exception ex)
+            catch
             {
                 logonModel.IsAuthenthicated = false;
-                logonModel.Message = ex.Message;
+                ViewBag.Message = Localization.GetString("LoginFailed", LocalResourceFile);
             }
 
             // Authenthicate failed
             if (!logonModel.IsAuthenthicated)
             {
-                ViewBag.Message = Localization.GetString("LoginFailed", LocalResourceFile);
                 return View();
             }
+
             string AuthType = "DNN";
 
             UserLoginStatus status = new UserLoginStatus();
@@ -168,6 +177,8 @@ namespace Dnn.Modules.ECMAuthDnn.Controllers
         {
             // Get Module Settings
             Settings settings = new Settings();
+
+            settings.AllowWCA = ModuleContext.Configuration.ModuleSettings.GetValueOrDefault("ECMAuthDnn_AllowWCA", false);
             settings.AuthUrl = ModuleContext.Configuration.ModuleSettings.GetValueOrDefault("ECMAuthDnn_AuthUrl", string.Empty);
             settings.RedirectUrl = ModuleContext.Configuration.ModuleSettings.GetValueOrDefault("ECMAuthDnn_RedirectUrl", "~/");
             settings.DnnUser = ModuleContext.Configuration.ModuleSettings.GetValueOrDefault("ECMAuthDnn_DnnUser", string.Empty);

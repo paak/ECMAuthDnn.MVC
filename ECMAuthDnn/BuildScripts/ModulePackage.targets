@@ -54,6 +54,10 @@
       <Output TaskParameter="Include" ItemName="PackageManifestFiles" />
     </CreateItem>
 
+    <CreateItem Include="**\ecom.png">
+      <Output TaskParameter="Include" ItemName="PackageTxtFiles" />
+    </CreateItem>
+
     <CreateItem Include="**\License.txt">
       <Output TaskParameter="Include" ItemName="PackageTxtFiles" />
     </CreateItem>

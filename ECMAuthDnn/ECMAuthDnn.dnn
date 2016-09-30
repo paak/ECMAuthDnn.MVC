@@ -3,12 +3,12 @@
     <package name="ECMAuthDnn" type="Module" version="00.00.01">
       <friendlyName>ECMAuthDnn</friendlyName>
       <description>DNN ECMAuthDnn module</description>
-      <iconFile>~/Icons/Sigma/Software_32X32_Standard.png</iconFile>
+      <iconFile>ecom.png</iconFile>
       <owner>
-        <name>Dnn Software</name>
+        <name>WCA eCommerce Network</name>
         <organization>dnnsoftware.com</organization>
-        <url>http://www.dnnsoftware.com</url>
-        <email>support@dnnsoftware.com</email>
+        <url>http://www.wcaecommerce.com</url>
+        <email>support@WCA eCommerce Network.com</email>
       </owner>
       <license src="License.txt"></license>
       <releaseNotes src="ReleaseNotes.txt"></releaseNotes>
@@ -55,17 +55,6 @@
                     <controlSrc>Dnn.Modules.ECMAuthDnn.Controllers/Account/Login.mvc</controlSrc>
                     <supportsPartialRendering>False</supportsPartialRendering>
                     <controlTitle />
-                    <controlType>Edit</controlType>
-                    <iconFile />
-                    <helpUrl />
-                    <viewOrder>0</viewOrder>
-                    <supportsPopUps>True</supportsPopUps>
-                  </moduleControl>
-                  <moduleControl>
-                    <controlKey />
-                    <controlSrc>Dnn.Modules.ECMAuthDnn.Controllers/Account/Logout.mvc</controlSrc>
-                    <supportsPartialRendering>False</supportsPartialRendering>
-                    <controlTitle>Logout</controlTitle>
                     <controlType>Edit</controlType>
                     <iconFile />
                     <helpUrl />

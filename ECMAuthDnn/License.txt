@@ -1,9 +1,9 @@
 ﻿<div class="License">
 	<h3>License</h3>
 	<p class="Owner">
-		Dnn Software  <a href=http://www.dnnsoftware.com>http://www.dnnsoftware.com</a></br>
+		WCA eCommerce Network. <a href=http://www.wcaecommerce.com>http://www.wcaecommerce.com</a></br>
 		Copyright (c) 2016</br>	
-		by Dnn Software</br>
+		by WCA eCommerce Network</br>
 	</p>
     <p>
         Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 

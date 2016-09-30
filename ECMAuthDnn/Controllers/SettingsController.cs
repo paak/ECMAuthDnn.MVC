@@ -32,10 +32,11 @@ namespace Dnn.Modules.ECMAuthDnn.Controllers
         public ActionResult Settings()
         {
             var settings = new Models.Settings();
+
+            settings.AllowWCA = ModuleContext.Configuration.ModuleSettings.GetValueOrDefault("ECMAuthDnn_AllowWCA", false);
             settings.AuthUrl = ModuleContext.Configuration.ModuleSettings.GetValueOrDefault("ECMAuthDnn_AuthUrl", string.Empty);
             settings.RedirectUrl = ModuleContext.Configuration.ModuleSettings.GetValueOrDefault("ECMAuthDnn_RedirectUrl", string.Empty);
             settings.DnnUser = ModuleContext.Configuration.ModuleSettings.GetValueOrDefault("ECMAuthDnn_DnnUser", string.Empty);
-
             string pass = ModuleContext.Configuration.ModuleSettings.GetValueOrDefault("ECMAuthDnn_DnnPass", string.Empty);
             if (!string.IsNullOrWhiteSpace(pass))
             {
@@ -55,6 +56,7 @@ namespace Dnn.Modules.ECMAuthDnn.Controllers
         [DotNetNuke.Web.Mvc.Framework.ActionFilters.ValidateAntiForgeryToken]
         public ActionResult Settings(Models.Settings settings)
         {
+            ModuleContext.Configuration.ModuleSettings["ECMAuthDnn_AllowWCA"] = settings.AllowWCA;
             ModuleContext.Configuration.ModuleSettings["ECMAuthDnn_AuthUrl"] = settings.AuthUrl;
             ModuleContext.Configuration.ModuleSettings["ECMAuthDnn_RedirectUrl"] = settings.RedirectUrl;
             ModuleContext.Configuration.ModuleSettings["ECMAuthDnn_DnnUser"] = settings.DnnUser;
