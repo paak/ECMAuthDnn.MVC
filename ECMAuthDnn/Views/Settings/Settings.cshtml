@@ -29,4 +29,10 @@
         </div>
         @Html.PasswordFor(m => m.DnnPass)
     </div>
+    <div class="dnnFormItem">
+        <div class="dnnLabel" style="position: relative;">
+            @Html.LabelFor(m => m.AllowWCA, new { @class = "col-md-2 control-label" })
+        </div>
+        @Html.CheckBoxFor(m => m.AllowWCA)
+    </div>
 </fieldset>

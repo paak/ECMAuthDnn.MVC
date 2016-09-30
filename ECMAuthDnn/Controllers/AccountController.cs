@@ -16,6 +16,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using System.Xml;
+using System.Xml.Serialization;
 
 namespace Dnn.Modules.ECMAuthDnn.Controllers
 {
@@ -83,28 +84,44 @@ namespace Dnn.Modules.ECMAuthDnn.Controllers
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     // Get response object
+                    Stream responseStream = response.GetResponseStream();
 
-                    // If allows wca members
-                    if (!settings.AllowWCA)
+                    XmlSerializer serializer = new XmlSerializer(typeof(AuthResponseDTO));
+                    AuthResponseDTO authResponse = (AuthResponseDTO)serializer.Deserialize(responseStream);
+
+                    bool isEcom = false;
+                    if (authResponse != null && authResponse.AgentDetails != null && authResponse.AgentDetails.Networks != null)
                     {
-
+                        isEcom = authResponse.AgentDetails.Networks.Exists(x => x.Code == "WCAeC");
                     }
 
-                    logonModel.IsAuthenthicated = true;
+                    responseStream.Close();
 
-                    // Set cookie for browser
-                    string setCookie = response.Headers[HttpResponseHeader.SetCookie];
+                    // If allows wca members
+                    logonModel.IsAuthenthicated = (!settings.AllowWCA && !isEcom) ? false : true;
 
-                    HttpCookie httpCookie = new HttpCookie("authToken");
-                    httpCookie.Value = setCookie;
+                    // if not authorize no need to set cookie
+                    if (logonModel.IsAuthenthicated)
+                    {
+                        // Set cookie for browser
+                        string setCookie = response.Headers[HttpResponseHeader.SetCookie];
 
-                    Response.SetCookie(httpCookie);
+                        HttpCookie httpCookie = new HttpCookie("authToken");
+                        httpCookie.Value = setCookie;
+
+                        Response.SetCookie(httpCookie);
+                    }
+                    else
+                    {
+                        ViewBag.Message = Localization.GetString("LoginEcom", LocalResourceFile);
+                    }
                 }
                 else
                 {
                     logonModel.IsAuthenthicated = false;
                     ViewBag.Message = Localization.GetString("LoginFailed", LocalResourceFile);
                 }
+                response.Close();
             }
 
             catch (WebException webEx)
@@ -114,6 +131,7 @@ namespace Dnn.Modules.ECMAuthDnn.Controllers
                 // Or if you want to return an HTTP 404 instead:
                 logonModel.IsAuthenthicated = false;
                 ViewBag.Message = Localization.GetString("LoginFailed", LocalResourceFile);
+                response.Close();
             }
 
             catch
