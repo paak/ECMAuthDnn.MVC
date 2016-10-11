@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
-<project name="dev-deployment" xmlns="http://nant.sf.net/release/0.92/nant.xsd" default="deploy-release">
+<project name="dev-deployment" xmlns="http://nant.sf.net/release/0.92/nant.xsd" default="cp-dnn">
   <!-- Environment -->
   <!-- property name="framework" value="C:\Windows\Microsoft.NET\Framework\v4.0.30319"/ -->
   <property name="framework" value="C:\Program Files\MSBuild\14.0\Bin"/>
@@ -20,7 +20,7 @@
     <!-- prepare folder -->
     <delete>
       <fileset>
-        <include name="D:\htdocs\dnndev\bin\ECMAuthDnn.*" />
+        <include name="D:\inetpub\dnn\bin\ECMAuthDnn.*" />
       </fileset>
     </delete>
 <!--
@@ -31,35 +31,35 @@
     </delete>
     -->
     <!-- Assembly -->
-    <copy todir="D:\htdocs\dnndev\bin">
+    <copy todir="D:\inetpub\dnn\bin">
       <fileset basedir="..\..\bin">
         <include name="ECMAuthDnn.dll"/>
       </fileset>
     </copy>
 
     <!-- App_LocalResources -->
-    <copy todir="D:\htdocs\dnndev\DesktopModules\MVC\ECMAuthDnn\App_LocalResources">
+    <copy todir="D:\inetpub\dnn\DesktopModules\MVC\ECMAuthDnn\App_LocalResources">
       <fileset basedir=".\App_LocalResources">
         <include name="**\*"/>
       </fileset>
     </copy>
     
     <!-- Providers -->
-    <copy todir="D:\htdocs\dnndev\DesktopModules\MVC\ECMAuthDnn\Providers">
+    <copy todir="D:\inetpub\dnn\DesktopModules\MVC\ECMAuthDnn\Providers">
       <fileset basedir=".\Providers">
         <include name="**\*"/>
       </fileset>
     </copy>
     
     <!-- Views -->
-    <copy todir="D:\htdocs\dnndev\DesktopModules\MVC\ECMAuthDnn\Views">
+    <copy todir="D:\inetpub\dnn\DesktopModules\MVC\ECMAuthDnn\Views">
       <fileset basedir=".\Views">
         <include name="**\*"/>
       </fileset>
     </copy>
 
     <!-- Module style -->
-    <copy todir="D:\htdocs\dnndev\DesktopModules\MVC\ECMAuthDnn">
+    <copy todir="D:\inetpub\dnn\DesktopModules\MVC\ECMAuthDnn">
       <fileset basedir=".\">
         <include name="module.css"/>
       </fileset>

@@ -90,15 +90,21 @@ namespace Dnn.Modules.ECMAuthDnn.Controllers
                     AuthResponseDTO authResponse = (AuthResponseDTO)serializer.Deserialize(responseStream);
 
                     bool isEcom = false;
+                    bool isWca = false;
                     if (authResponse != null && authResponse.AgentDetails != null && authResponse.AgentDetails.Networks != null)
                     {
-                        isEcom = authResponse.AgentDetails.Networks.Exists(x => x.Code == "WCAeC");
+                        isEcom = authResponse.AgentDetails
+                            .Networks
+                            .Exists(x => x.Code == "WCAeC");
+                        isWca = settings.AllowWCA && authResponse.AgentDetails
+                            .Networks
+                            .Exists(x => x.Name.ToLower().Contains("wca"));
                     }
 
                     responseStream.Close();
 
                     // If allows wca members
-                    logonModel.IsAuthenthicated = (!settings.AllowWCA && !isEcom) ? false : true;
+                    logonModel.IsAuthenthicated = (!isWca && !isEcom) ? false : true;
 
                     // if not authorize no need to set cookie
                     if (logonModel.IsAuthenthicated)
@@ -108,8 +114,14 @@ namespace Dnn.Modules.ECMAuthDnn.Controllers
 
                         HttpCookie httpCookie = new HttpCookie("authToken");
                         httpCookie.Value = setCookie;
-
                         Response.SetCookie(httpCookie);
+
+                        HttpCookie ecomState = new HttpCookie("ecomState");
+                        ecomState["FirstName"] = Base64Encode(authResponse.UserDetails.FirstName);
+                        ecomState["LastName"] = Base64Encode(authResponse.UserDetails.LastName);
+                        ecomState["Email"] = Base64Encode(authResponse.UserDetails.Email);
+
+                        Response.SetCookie(ecomState);
                     }
                     else
                     {
@@ -234,6 +246,17 @@ namespace Dnn.Modules.ECMAuthDnn.Controllers
             // Preparing post data
             UTF8Encoding encoding = new UTF8Encoding();
             return encoding.GetBytes(xml.OuterXml);
+        }
+
+        private string Base64Encode(string plainText)
+        {
+            if (string.IsNullOrWhiteSpace(plainText))
+            {
+                return string.Empty;
+            }
+
+            byte[] plainTextBytes = Encoding.UTF8.GetBytes(plainText);
+            return Convert.ToBase64String(plainTextBytes);
         }
         #endregion
 
